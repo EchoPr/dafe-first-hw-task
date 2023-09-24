@@ -41,7 +41,7 @@ bool game_stop() {
 }
 
 void show_game_state() {
-    cout << "Номер ряда" << string(39, ' ') << "Фишки" << endl;;
+    cout << "Number of row" << string(39, ' ') << "Chips" << endl;;
     for (int i = 1; i < 4; i++) {
         int c = game_field.get_chip(i - 1);
         cout << string(5, ' ') << i << string(18, ' ') << string(c, '*') << string(22 + 5 - c, ' ') << c << '\n';
@@ -50,14 +50,14 @@ void show_game_state() {
 
 
 void show_start_screen() {
-    cout << string(23, ' ') << "Игра Ним" << '\n';
-    cout << "Вы можете взять любое количество фишек из любого ряда." << endl;;
-    cout << string(5, ' ') << "Выигрывает тот, кто заберёт последнюю фишку." << endl;;
+    cout << string(23, ' ') << "Game Nim" << '\n';
+    cout << "You can take any num of chips from any row." << endl;;
+    cout << string(5, ' ') << "Winner id the player who take last chip." << endl;;
 
     show_game_state();
 
-    cout << "Введите Ваш ход в формате РЯД КОЛИЧ (например,\n    2 3 - взять из 2 pядa 3 фишки\n    Или введите 0 0 для выхода)" << endl;;
-    cout << "Вы ходите первым! Удачи!\n" << endl;;
+    cout << "       (,\n    2 3 -   2 pa 3 \n      0 0  )" << endl;;
+    cout << "  ! !\n" << endl;;
 
 }
 
@@ -65,12 +65,14 @@ int user_turn() {
     //If user entered "0 0" then func return -1 and game breaks.
     //If user entered incorrect data then func return 1 and waiting for correct data
     //Else func returns 0
-    cout << "Ваш ход: ";
+    cout << " : ";
     int row, num;
+
+    //!
 
     cin >> row >> num;
     if (cin.fail()) {
-        throw runtime_error("Неверный тип входных данных! Ожидался ввод <row, num_of_chips>");
+        throw runtime_error("   !   <row, num_of_chips>");
     }
 
     if (row == 0 && num == 0) return -1;
