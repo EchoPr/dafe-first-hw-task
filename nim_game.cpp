@@ -56,23 +56,21 @@ void show_start_screen() {
 
     show_game_state();
 
-    cout << "˜˜˜˜˜˜˜ ˜˜˜ ˜˜˜ ˜ ˜˜˜˜˜˜˜ ˜˜˜ ˜˜˜˜˜ (˜˜˜˜˜˜˜˜,\n    2 3 - ˜˜˜˜˜ ˜˜ 2 p˜˜a 3 ˜˜˜˜˜\n    ˜˜˜ ˜˜˜˜˜˜˜ 0 0 ˜˜˜ ˜˜˜˜˜˜)" << endl;;
-    cout << "˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜! ˜˜˜˜˜!\n" << endl;;
-
+    cout << "Enter your turn in format <ROW, CHIPS> (For example,\n    2 3 - Take 3 chips from 2 row\n    Or enter 0 0 for exit)" << endl;
 }
 
 int user_turn() {
     //If user entered "0 0" then func return -1 and game breaks.
     //If user entered incorrect data then func return 1 and waiting for correct data
     //Else func returns 0
-    cout << "˜˜˜ ˜˜˜: ";
+    cout << "Your turn: ";
     int row, num;
 
     //!
 
     cin >> row >> num;
     if (cin.fail()) {
-        throw runtime_error("˜˜˜˜˜˜˜˜ ˜˜˜ ˜˜˜˜˜˜˜ ˜˜˜˜˜˜! ˜˜˜˜˜˜˜˜ ˜˜˜˜ <row, num_of_chips>");
+        throw runtime_error("Invalide input data! Expected turn <row, num_of_chips>");
     }
 
     if (row == 0 && num == 0) return -1;
