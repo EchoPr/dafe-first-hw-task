@@ -47,7 +47,7 @@ bool game_stop() {
 }
 
 void show_game_state() {
-    cout << "Number of row" << string(39, ' ') << "Chips" << endl;;
+    cout << "Number of row" << string(39, ' ') << "Chips" << endl;
     for (int i = 1; i < 4; i++) {
         int c = game_field.get_chip(i - 1);
         cout << string(5, ' ') << i << string(21, ' ') << string(c, '*') << string(22 + 5 - c, ' ') << c << '\n';
@@ -56,24 +56,23 @@ void show_game_state() {
 
 
 void show_start_screen() {
-    cout << string(23, ' ') << "Game Nim" << '\n';
-    cout << "You can take any num of chips from any row." << endl;;
-    cout << string(5, ' ') << "Winner id the player who take last chip." << endl;;
+    cout << string(23, ' ') << "Game Nim" << endl;
+    cout << "You can take any num of chips from any row." << endl;
+    cout << string(5, ' ') << "Winner id the player who take last chip." << endl;
 
     show_game_state();
 
     cout << "In your stroke enter your turn in format <ROW, CHIPS> (For example,\n    2 3 - Take 3 chips from 2 row\n    Or enter 0 0 for exit)" << endl;
-    cout << "There are 3 start conditions (First turn by: 1 - user; 2 - computer; 3 - take it random)" << endl;
+    cout << "There are 3 start conditions (First turn by: 1 - user; 2 - computer; 3 - take it random)\0" << endl;
+    
 }
 
 int user_turn() {
     //If user entered "0 0" then func return -1 and game breaks.
     //If user entered incorrect data then func return 1 and waiting for correct data
     //Else func returns 0
-    cout << "Your turn: ";
+    cout << "Your turn: \0";
     int row, num;
-
-    //!
 
     cin >> row >> num;
     if (cin.fail()) {
@@ -90,11 +89,11 @@ int user_handler(){
         while (!user_moved) {
             switch (user_turn()) {
             case END_GAME:
-                cout << "Game break!" << endl;;
+                cout << "Game break!" << endl;
                 return END_GAME;
                 break;
             case NOT_OK:
-                cout << "Incorrect move!" << endl;;
+                cout << "Incorrect move!" << endl;
                 break;
             case OK:
                 user_moved = 1;
@@ -106,7 +105,7 @@ int user_handler(){
 
 string pull_time(int row) {
     game_field.take_chips(row, 1);
-    return ("Computer move: " + char(row + 49)) + ' ' + '\n';
+    return ("Computer move: " + char(row + 49)) + ' ' + '\n' + '\0';
 }
 
 int xor_heaps(vector<int> d) {
@@ -132,7 +131,7 @@ string comp_turn() {
             d[h] = c;
             if (xor_heaps(d) == 0) {
                 game_field.take_chips(h, c);
-                return "Computer move: " + char(h + 1 + 48) + ' ' + char(c + 48) + '\n';
+                return "Computer move: " + to_string(h + 1) + " " + to_string(c) + '\n' + '\0';
             }
             d[h] = 0;
         }
@@ -140,13 +139,13 @@ string comp_turn() {
 }
 
 int choose_player(){
-    cout << "Choose your stroke: ";
+    cout << "Choose your stroke: \0";
     int st;
 
     while (1){
         cin >> st;
         if (st < 1 || st > 3){
-            cout << "Incorrect type. Try again\nChoose your stroke: " << endl;
+            cout << "Incorrect type. Try again\nChoose your stroke: \0" << endl;
             continue;
         }
         if (st == 3){
@@ -166,27 +165,30 @@ int main() {
 
 
     while (1) {
-        if (stroke % 2 + 1 == user_stroke)
+        if (stroke % 2 + 1 == user_stroke){
             if (user_handler() == END_GAME){
                 cout << "Game was ended premature" << endl;
                 break;
             }
+            show_game_state();
+        }
         else{
             string ct = comp_turn();
             cout << ct << endl;
+            show_game_state();
         }
 
         if (game_stop()){
             cout << "Game over! " << (
                 stroke % 2 + 1 == user_stroke ? 
-                "User win's!" : 
-                "Super-advanced artificial intelligence win's!"
+                "User win's!\0" : 
+                "Super-advanced artificial intelligence win's!\0"
             ) << endl;
 
             break;
         }
         
-        show_game_state();
+        
 
         stroke++;
     }
