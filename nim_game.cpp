@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <random>
+#include <sstream>
 #include <ctime>
 
 using namespace std;
@@ -47,18 +48,17 @@ bool game_stop() {
 }
 
 void show_game_state() {
-    cout << "Number of row" << string(39, ' ') << "Chips" << endl;
     for (int i = 1; i < 4; i++) {
         int c = game_field.get_chip(i - 1);
-        cout << string(5, ' ') << i << string(21, ' ') << string(c, '*') << string(22 + 5 - c, ' ') << c << '\n';
+        cout << i << ": " << string(c, '*') << endl;
     }
 }
 
 
 void show_start_screen() {
-    cout << string(23, ' ') << "Game Nim" << endl;
+    cout << "Game Nim" << endl;
     cout << "You can take any num of chips from any row." << endl;
-    cout << string(5, ' ') << "Winner id the player who take last chip." << endl;
+    cout <<  "Winner id the player who take last chip." << endl;
 
     show_game_state();
 
@@ -84,6 +84,13 @@ int user_turn() {
     return game_field.take_chips(row - 1, num);
 }
 
+/*
+processing user turn
+returns:
+    END_GAME if user entered 0 0 
+    NOT_OK if user entered smth like shit
+    OK if user entered correct move
+*/
 int user_handler(){
     int user_moved = 0;
         while (!user_moved) {
@@ -103,17 +110,22 @@ int user_handler(){
     return OK;
 }
 
+/*
+If computer is in lose state it starts take by 1 chip from first unzero heap
+*/
 string pull_time(int row) {
     game_field.take_chips(row, 1);
-    return ("Computer move: " + char(row + 49)) + ' ' + '\n' + '\0';
+    ostringstream res;
+    res << "Computer move: " << row + 1 << endl;
+    return res.str();
 }
 
 int xor_heaps(vector<int> d) {
-    int f = game_field.get_chip(0) - d[0];
-    int s = game_field.get_chip(1) - d[1];
-    int t = game_field.get_chip(2) - d[2];
+    int first_h = game_field.get_chip(0) - d[0];
+    int second_h = game_field.get_chip(1) - d[1];
+    int third_h = game_field.get_chip(2) - d[2];
 
-    return f ^ s ^ t;
+    return first_h ^ second_h ^ third_h;
 }
 
 
@@ -125,35 +137,37 @@ string comp_turn() {
         else return pull_time(2);
     }
 
-    vector<int> d(3);
-    for (int h = 0; h < 3; h++) {
-        for (int c = 1; c <= game_field.get_chip(h); c++) {
-            d[h] = c;
-            if (xor_heaps(d) == 0) {
-                game_field.take_chips(h, c);
-                return "Computer move: " + to_string(h + 1) + " " + to_string(c) + '\n' + '\0';
+    vector<int> difference(3);
+    for (int heap = 0; heap < 3; heap++) {
+        for (int c = 1; c <= game_field.get_chip(heap); c++) {
+            difference[heap] = c;
+            if (xor_heaps(difference) == 0) {
+                game_field.take_chips(heap, c);
+                ostringstream res;
+                res << "Computer move: " << heap + 1 << " " << c << endl;
+                return res.str();
             }
-            d[h] = 0;
+            difference[heap] = 0;
         }
     }
 }
 
 int choose_player(){
     cout << "Choose your stroke: \0";
-    int st;
+    int stroke;
 
     while (1){
-        cin >> st;
-        if (st < 1 || st > 3){
+        cin >> stroke;
+        if (stroke < 1 || stroke > 3){
             cout << "Incorrect type. Try again\nChoose your stroke: \0" << endl;
             continue;
         }
-        if (st == 3){
+        if (stroke == 3){
             srand(time(0));
             return rand() % 2 + 1;
         }
 
-        return st;    
+        return stroke;    
     }
 }
 
@@ -173,8 +187,8 @@ int main() {
             show_game_state();
         }
         else{
-            string ct = comp_turn();
-            cout << ct << endl;
+            string computer_turn = comp_turn();
+            cout << computer_turn << endl;
             show_game_state();
         }
 
@@ -187,8 +201,6 @@ int main() {
 
             break;
         }
-        
-        
 
         stroke++;
     }
