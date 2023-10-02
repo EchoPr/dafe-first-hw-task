@@ -27,6 +27,10 @@ struct GameField {
         chips_amount = 12;
     }
 
+    /*
+    "Take" <num> chips from <row> heap and returns OK
+    If smth wents wrong returns NOT_OK
+    */
     int take_chips(int row, int num) {
         if (row < 0 || row > 2 || field[row] < num)
             return NOT_OK;
